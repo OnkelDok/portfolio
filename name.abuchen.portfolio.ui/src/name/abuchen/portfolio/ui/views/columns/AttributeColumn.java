@@ -1,5 +1,6 @@
 package name.abuchen.portfolio.ui.views.columns;
 
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -27,6 +28,7 @@ import name.abuchen.portfolio.model.ImageManager;
 import name.abuchen.portfolio.model.LimitPrice;
 import name.abuchen.portfolio.model.Security;
 import name.abuchen.portfolio.model.SecurityPrice;
+import name.abuchen.portfolio.money.Values;
 import name.abuchen.portfolio.ui.Images;
 import name.abuchen.portfolio.ui.Messages;
 import name.abuchen.portfolio.ui.util.Colors;
@@ -206,6 +208,40 @@ public class AttributeColumn extends Column
                     return null;
             }
         }
+        
+        @Override
+        public String getToolTipText(Object e)
+        {
+            Security security = Adaptor.adapt(Security.class, e);
+            if (security == null)
+                return null;
+
+            Attributes attributes = security.getAttributes();
+            if (attributes == null)
+                return null;
+            
+            LimitPrice limit = (LimitPrice) attributes.get(attribute);
+            // raw limit
+            String result = ""; //$NON-NLS-1$
+                        
+            SecurityPrice latestSecurityPrice = security.getSecurityPrice(LocalDate.now());    
+            
+            if(limit != null && latestSecurityPrice != null)
+            {               
+                double absDistance = (limit.getValue() - latestSecurityPrice.getValue()) / Values.Quote.divider();
+                DecimalFormat df = new DecimalFormat("+#.##;-#.##"); //$NON-NLS-1$
+                result = result + "Distance from price " + Values.Quote.format(latestSecurityPrice.getValue())   //$NON-NLS-1$
+                                + " to limit " + Values.Quote.format(limit.getValue())  //$NON-NLS-1$
+                                + ":\r\nabsolute: " + df.format(absDistance); //$NON-NLS-1$
+                
+                double relativeDistance = ((double)limit.getValue()/latestSecurityPrice.getValue() - 1);
+                df = new DecimalFormat("+#.#%;-#.#%"); //$NON-NLS-1$
+                result = result + "\r\nrelative: " + df.format(relativeDistance); //$NON-NLS-1$
+           }
+            
+            return result;
+        }
+
     }
 
     private static final class BookmarkLabelProvider extends StyledCellLabelProvider // NOSONAR
