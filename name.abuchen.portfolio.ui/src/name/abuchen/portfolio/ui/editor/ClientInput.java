@@ -187,7 +187,7 @@ public class ClientInput
     {
         if (clientFile == null)
         {
-            doSaveAs(shell, null, null);
+            doSaveAs(shell, null, EnumSet.of(SaveFlag.XML));
             return;
         }
 
@@ -557,7 +557,7 @@ public class ClientInput
         this.exchangeRateProviderFacory = ContextInjectionFactory //
                         .make(ExchangeRateProviderFactory.class, this.context, c2);
 
-        this.navigation = new Navigation(client);
+        this.navigation = ContextInjectionFactory.make(Navigation.class, this.context, c2);
 
         client.addPropertyChangeListener(event -> {
 
