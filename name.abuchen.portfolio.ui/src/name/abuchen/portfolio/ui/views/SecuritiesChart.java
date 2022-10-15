@@ -387,7 +387,7 @@ public class SecuritiesChart
         legend.setPosition(SWT.BOTTOM);
         legend.setVisible(true);
 
-        new CrosshairPainter(chart);
+        new MeasureLinePainter(chart);
     }
 
     public IntervalOption getIntervalOption()
@@ -1622,13 +1622,13 @@ public class SecuritiesChart
                         .map(r -> r.getMovingAverageCostPerSharesHeld().getAmount() / Values.Quote.divider());
     }
 
-    private class CrosshairPainter implements Listener
+    private class MeasureLinePainter implements Listener
     {
         TimelineChart chart;
         Point p1;
         Point p2;
 
-        private CrosshairPainter(TimelineChart chart)
+        private MeasureLinePainter(TimelineChart chart)
         {
             this.chart = chart;
             ((IPlotArea) chart.getPlotArea()).addCustomPaintListener(new ICustomPaintListener()
@@ -1636,38 +1636,10 @@ public class SecuritiesChart
                 @Override
                 public void paintControl(PaintEvent e)
                 {
-                    if (p1 == null)
+                    if (p1 == null || p2 == null)
                         return;
-
-                    if (p2 == null)
-                    {
-                        if (!redrawOnMove)
-                            drawCrosshair(e, p1.x, p1.y);
-
-                        return;
-                    }
 
                     drawMeasureLine(e, p1, p2);
-                }
-
-                private void drawCrosshair(PaintEvent e, int mouseX, int mouseY)
-                {
-                    e.gc.setLineStyle(SWT.LINE_SOLID);
-                    e.gc.setForeground(Colors.ICON_ORANGE);
-
-                    // draw crosshair
-                    e.gc.drawLine(mouseX, 0, mouseX, e.height);
-                    e.gc.drawLine(0, mouseY, e.width, mouseY);
-
-                    // draw x- and y-value
-                    LocalDate date = Instant
-                                    .ofEpochMilli((long) chart.getAxisSet().getXAxis(0).getDataCoordinate(mouseX))
-                                    .atZone(ZoneId.systemDefault()).toLocalDate();
-
-                    e.gc.drawText(Values.Date.format(date), mouseX + 5, e.height - 20, true);
-                    e.gc.drawText(new DecimalFormat(Values.Quote.pattern())
-                                    .format(chart.getAxisSet().getYAxis(0).getDataCoordinate(mouseY)), e.width - 70,
-                                    mouseY + 5, true);
                 }
 
                 private void drawMeasureLine(PaintEvent e, Point p1, Point p2)
