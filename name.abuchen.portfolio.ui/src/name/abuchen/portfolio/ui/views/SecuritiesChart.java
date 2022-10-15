@@ -381,13 +381,13 @@ public class SecuritiesChart
         chart.getPlotArea().addPaintListener(event -> customPaintListeners.forEach(l -> l.paintControl(event)));
         chart.getPlotArea().addPaintListener(event -> customBehindPaintListener.forEach(l -> l.paintControl(event)));
 
-        setupTooltip();
-
         ILegend legend = chart.getLegend();
         legend.setPosition(SWT.BOTTOM);
         legend.setVisible(true);
 
         new MeasureLinePainter(chart);
+
+        setupTooltip();
     }
 
     public IntervalOption getIntervalOption()
@@ -1644,6 +1644,8 @@ public class SecuritiesChart
 
                 private void drawMeasureLine(PaintEvent e, Point p1, Point p2)
                 {
+                    LocalDate StartDate;
+                    LocalDate EndDate;
                     double yValP1;
                     double yValP2;
 
@@ -1659,16 +1661,22 @@ public class SecuritiesChart
                     {
                         yValP1 = getYValue(p1);
                         yValP2 = getYValue(p2);
+
+                        StartDate = Instant.ofEpochMilli((long) chart.getAxisSet().getXAxis(0).getDataCoordinate(p1.x)).atZone(ZoneId.systemDefault()).toLocalDate();
+                        EndDate = Instant.ofEpochMilli((long) chart.getAxisSet().getXAxis(0).getDataCoordinate(p2.x)).atZone(ZoneId.systemDefault()).toLocalDate();
                     }
                     else
                     {
                         yValP1 = getYValue(p2);
                         yValP2 = getYValue(p1);
+
+                        StartDate = Instant.ofEpochMilli((long) chart.getAxisSet().getXAxis(0).getDataCoordinate(p2.x)).atZone(ZoneId.systemDefault()).toLocalDate();
+                        EndDate = Instant.ofEpochMilli((long) chart.getAxisSet().getXAxis(0).getDataCoordinate(p1.x)).atZone(ZoneId.systemDefault()).toLocalDate();
                     }
 
-                    String text = "P1: " + new DecimalFormat(Values.Quote.pattern()).format(yValP1) // //$NON-NLS-1$
+                    String text = "P1: " + new DecimalFormat(Values.Quote.pattern()).format(yValP1) + " (" + StartDate + ")" //   //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
                                     + System.lineSeparator() //
-                                    + "P2: " + new DecimalFormat(Values.Quote.pattern()).format(yValP2) // //$NON-NLS-1$
+                                    + "P2: " + new DecimalFormat(Values.Quote.pattern()).format(yValP2) + " (" + EndDate + ")" // //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                                     + System.lineSeparator() //
                                     + "absolute Abweichung: " // //$NON-NLS-1$
                                     + new DecimalFormat(Values.Quote.pattern()).format(yValP2 - yValP1)
