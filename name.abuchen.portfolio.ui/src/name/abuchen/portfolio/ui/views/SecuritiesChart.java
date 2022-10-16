@@ -1644,8 +1644,8 @@ public class SecuritiesChart
 
                 private void drawMeasureLine(PaintEvent e, Point p1, Point p2)
                 {
-                    LocalDate StartDate;
-                    LocalDate EndDate;
+                    LocalDateTime StartDate;
+                    LocalDateTime EndDate;
                     double yValP1;
                     double yValP2;
 
@@ -1662,21 +1662,21 @@ public class SecuritiesChart
                         yValP1 = getYValue(p1);
                         yValP2 = getYValue(p2);
 
-                        StartDate = Instant.ofEpochMilli((long) chart.getAxisSet().getXAxis(0).getDataCoordinate(p1.x)).atZone(ZoneId.systemDefault()).toLocalDate();
-                        EndDate = Instant.ofEpochMilli((long) chart.getAxisSet().getXAxis(0).getDataCoordinate(p2.x)).atZone(ZoneId.systemDefault()).toLocalDate();
+                        StartDate = Instant.ofEpochMilli((long) chart.getAxisSet().getXAxis(0).getDataCoordinate(p1.x)).atZone(ZoneId.systemDefault()).toLocalDateTime();
+                        EndDate = Instant.ofEpochMilli((long) chart.getAxisSet().getXAxis(0).getDataCoordinate(p2.x)).atZone(ZoneId.systemDefault()).toLocalDateTime();
                     }
                     else
                     {
                         yValP1 = getYValue(p2);
                         yValP2 = getYValue(p1);
 
-                        StartDate = Instant.ofEpochMilli((long) chart.getAxisSet().getXAxis(0).getDataCoordinate(p2.x)).atZone(ZoneId.systemDefault()).toLocalDate();
-                        EndDate = Instant.ofEpochMilli((long) chart.getAxisSet().getXAxis(0).getDataCoordinate(p1.x)).atZone(ZoneId.systemDefault()).toLocalDate();
+                        StartDate = Instant.ofEpochMilli((long) chart.getAxisSet().getXAxis(0).getDataCoordinate(p2.x)).atZone(ZoneId.systemDefault()).toLocalDateTime();
+                        EndDate = Instant.ofEpochMilli((long) chart.getAxisSet().getXAxis(0).getDataCoordinate(p1.x)).atZone(ZoneId.systemDefault()).toLocalDateTime();
                     }
-
-                    String text = "P1: " + new DecimalFormat(Values.Quote.pattern()).format(yValP1) + " (" + StartDate + ")" //   //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
+                    
+                    String text = "P1: " + new DecimalFormat(Values.Quote.pattern()).format(yValP1) + " (" + Values.DateTime.format(StartDate) + ")" //   //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
                                     + System.lineSeparator() //
-                                    + "P2: " + new DecimalFormat(Values.Quote.pattern()).format(yValP2) + " (" + EndDate + ")" // //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                                    + "P2: " + new DecimalFormat(Values.Quote.pattern()).format(yValP2) + " (" + Values.DateTime.format(EndDate) + ")" // //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                                     + System.lineSeparator() //
                                     + "absolute Abweichung: " // //$NON-NLS-1$
                                     + new DecimalFormat(Values.Quote.pattern()).format(yValP2 - yValP1)
