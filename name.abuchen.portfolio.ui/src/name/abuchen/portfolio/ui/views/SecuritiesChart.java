@@ -40,8 +40,8 @@ import org.swtchart.IAxis;
 import org.swtchart.ICustomPaintListener;
 import org.swtchart.ILegend;
 import org.swtchart.ILineSeries;
-import org.swtchart.IPlotArea;
 import org.swtchart.ILineSeries.PlotSymbolType;
+import org.swtchart.IPlotArea;
 import org.swtchart.ISeries;
 import org.swtchart.ISeries.SeriesType;
 import org.swtchart.LineStyle;
@@ -1674,7 +1674,6 @@ public class SecuritiesChart
 
                 private void drawCrosshairValueTextbox(PaintEvent e, Point p)
                 {
-                    // e.gc.drawText(String.valueOf(chart.getAxisSet().getYAxis(0).getDataCoordinate(y)),
                     double value = getYValue(p);
                     String yText = new DecimalFormat(Values.Quote.pattern()).format(value);
                     Point txtYExtend = e.gc.textExtent(yText);
@@ -1742,20 +1741,20 @@ public class SecuritiesChart
                         double yValP1 = getYValue(p1);
                         double yValP2 = getYValue(p2);
 
-                        String text = "P1: " + new DecimalFormat(Values.Quote.pattern()).format(yValP1) + " (" //$NON-NLS-1$//$NON-NLS-2$
-                                        + getDateTime(p1) + ")" ////$NON-NLS-1$
+                        String text = Messages.LabelChartMeasureToolPoint1 + " " + new DecimalFormat(Values.Quote.pattern()).format(yValP1) + " (" //$NON-NLS-1$//$NON-NLS-2$
+                                        + getDateTime(p1) + ")" //$NON-NLS-1$
                                         + System.lineSeparator() //
-                                        + "P2: " + new DecimalFormat(Values.Quote.pattern()).format(yValP2) + " (" //$NON-NLS-1$ //$NON-NLS-2$
-                                        + getDateTime(p2) + ")" // //$NON-NLS-1$
+                                        + Messages.LabelChartMeasureToolPoint2 + " " + new DecimalFormat(Values.Quote.pattern()).format(yValP2) + " (" //$NON-NLS-1$ //$NON-NLS-2$
+                                        + getDateTime(p2) + ")" //$NON-NLS-1$
                                         + System.lineSeparator() //
-                                        + "absolute Abweichung: " // //$NON-NLS-1$
+                                        + Messages.LabelChartMeasureToolAbsoluteDeviation + " " //$NON-NLS-1$
                                         + new DecimalFormat(Values.Quote.pattern()).format(yValP2 - yValP1)
                                         + System.lineSeparator() //
-                                        + "relative Abweichung: " // //$NON-NLS-1$
+                                        + Messages.LabelChartMeasureToolRelativeDeviation + " "//$NON-NLS-1$
                                         + new DecimalFormat(Values.Percent.pattern()).format(yValP2 / yValP1)
                                         + System.lineSeparator() //
-                                        + "prozentuale Abweichung: " // //$NON-NLS-1$
-                                        + new DecimalFormat("+#.##%;-#.##%").format((yValP2 / yValP1) - 1); //$NON-NLS-1$
+                                        + Messages.LabelChartMeasureToolPercentageDeviation + " "//$NON-NLS-1$
+                                        + new DecimalFormat(Values.PercentWithSign.pattern()).format((yValP2 / yValP1 - 1));
 
                         Point txtExtend = e.gc.textExtent(text);
 
