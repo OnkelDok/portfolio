@@ -495,38 +495,47 @@ public class ClientInput
         }
     }
 
-    private File getPreferenceStoreFile(File file) throws IOException
+    private File getPreferenceStoreFileNextToClientFile(File file)
     {
-        boolean storeNextToFile = preferences.getBoolean(UIConstants.Preferences.STORE_SETTINGS_NEXT_TO_FILE, false);
+        String filename = file.getName();
+        int last = filename.lastIndexOf('.');
+        if (last > 0)
+            filename = filename.substring(0, last);
 
-        if (storeNextToFile)
+        return new File(file.getParentFile(), filename + ".settings"); //$NON-NLS-1$
+    }
+    
+    private File getPreferenceStoreCentral(File file) throws IOException
+    {
+        try
         {
-            String filename = file.getName();
-            int last = filename.lastIndexOf('.');
-            if (last > 0)
-                filename = filename.substring(0, last);
-
-            return new File(file.getParentFile(), filename + ".settings"); //$NON-NLS-1$
-        }
-        else
-        {
-            try
+            StringBuilder filename = new StringBuilder();
+            filename.append("prf_"); //$NON-NLS-1$
+            
+            if (!client.getIdent().isEmpty())
+                filename.append(client.getIdent());
+            else
             {
-                byte[] digest = MessageDigest.getInstance("MD5").digest(file.getAbsolutePath().getBytes()); //$NON-NLS-1$
-
-                StringBuilder filename = new StringBuilder();
-                filename.append("prf_"); //$NON-NLS-1$
+                // MD5-Hash of client file path
+                byte[] digest = MessageDigest.getInstance("MD5").digest(file.getAbsolutePath().getBytes()); $NON-NLS-1$
                 for (int i = 0; i < digest.length; i++)
                     filename.append(Integer.toString((digest[i] & 0xff) + 0x100, 16).substring(1));
-                filename.append(".txt"); //$NON-NLS-1$
-
-                return new File(PortfolioPlugin.getDefault().getStateLocation().toFile(), filename.toString());
             }
-            catch (NoSuchAlgorithmException e)
-            {
-                throw new IOException(e);
-            }
+            
+            filename.append(".txt"); $NON-NLS-1$
+            
+            return new File(PortfolioPlugin.getDefault().getStateLocation().toFile(), filename.toString());
         }
+        catch (NoSuchAlgorithmException e)
+        {
+            throw new IOException(e);
+        }
+    }
+
+    private File getPreferenceStoreFile(File file) throws IOException
+    {
+        return preferences.getBoolean(UIConstants.Preferences.STORE_SETTINGS_NEXT_TO_FILE, false) ? 
+            getPreferenceStoreFileNextToClientFile(file) : getPreferenceStoreCentral(file);
     }
 
     public List<ReportingPeriod> getReportingPeriods()
