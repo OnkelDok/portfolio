@@ -14,6 +14,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import java.util.UUID;
 
 import javax.crypto.SecretKey;
 
@@ -39,6 +40,8 @@ public class Client
      * The (minor) version of the file format as it has been read from file.
      */
     private transient int fileVersionAfterRead = CURRENT_VERSION; // NOSONAR
+
+    private String ident;
 
     private String baseCurrency = CurrencyUnit.EUR;
 
@@ -70,6 +73,17 @@ public class Client
     public Client()
     {
         doPostLoadInitialization();
+    }
+    
+    public void assignIdentIfEmpty()
+    {
+        if (ident == null || ident.isEmpty())
+            ident = UUID.randomUUID().toString();
+    }
+    
+    public String getIdent()
+    {
+        return ident;
     }
 
     /* package */final void doPostLoadInitialization()
