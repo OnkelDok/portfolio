@@ -495,6 +495,13 @@ public class ClientInput
         }
     }
 
+    private File getPreferenceStoreFile(File file) throws IOException
+    {
+        return preferences.getBoolean(UIConstants.Preferences.STORE_SETTINGS_NEXT_TO_FILE, false)
+            ? getPreferenceStoreFileNextToClientFile(file)
+            : getPreferenceStoreCentral(file);
+    }
+
     private File getPreferenceStoreFileNextToClientFile(File file)
     {
         String filename = file.getName();
@@ -530,12 +537,6 @@ public class ClientInput
         {
             throw new IOException(e);
         }
-    }
-
-    private File getPreferenceStoreFile(File file) throws IOException
-    {
-        return preferences.getBoolean(UIConstants.Preferences.STORE_SETTINGS_NEXT_TO_FILE, false) ? 
-            getPreferenceStoreFileNextToClientFile(file) : getPreferenceStoreCentral(file);
     }
 
     public List<ReportingPeriod> getReportingPeriods()
