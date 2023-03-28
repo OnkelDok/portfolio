@@ -608,6 +608,8 @@ public class ClientFactory
     private static void writeFile(final Client client, final File file, char[] password, Set<SaveFlag> flags,
                     boolean updateFlags) throws IOException
     {
+        client.assignIdentIfEmpty();
+    
         PortfolioLog.info(String.format("Saving %s with %s", file.getName(), flags.toString())); //$NON-NLS-1$
 
         // open an output stream for the file using a 64 KB buffer to speed up
